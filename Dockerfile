@@ -21,8 +21,11 @@ USER jenkins
 # Environment variable to disable SSL verification
 ENV CURL_OPTS="--insecure"
 
-# Run Jenkins plugin installation script
-RUN /usr/local/bin/install-plugins.sh blueocean build-environment cloudbees-folder config-file-provider credentials-binding credentials docker-plugin docker-slaves envinject git greenballs groovy http_request job-dsl jobConfigHistory naginator pam-auth pipeline-utility-steps nexus-artifact-uploader slack workflow-aggregator sonar subversion
+# Run Jenkins plugin installation script with updated CA certificates
+RUN apk --update add --no-cache openssl \
+    && update-ca-certificates \
+    && /usr/local/bin/install-plugins.sh blueocean build-environment cloudbees-folder config-file-provider credentials-binding credentials docker-plugin docker-slaves envinject git greenballs groovy http_request job-dsl jobConfigHistory naginator pam-auth pipeline-utility-steps nexus-artifact-uploader slack workflow-aggregator sonar subversion \
+    && apk del openssl
 
 COPY resources/basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
 COPY resources/maven-global-settings-files.xml /usr/share/jenkins/ref/maven-global-settings-files.xml
