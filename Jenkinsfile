@@ -1,8 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        label 'testingnode'
+    }
     environment {
-        IMAGE='liatrio/jenkins-alpine'
-        TAG='latest'
+        IMAGE = 'liatrio/jenkins-alpine'
+        TAG = 'latest'
     }
     stages {
         stage('Build') {
@@ -10,7 +12,7 @@ pipeline {
                 sh "docker build --pull -t ${IMAGE}:${TAG} ."
             }
         }
-        stage('Push to dockerhub') {
+        stage('Push to DockerHub') {
             when {
                 branch 'master'
             }
