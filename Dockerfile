@@ -6,8 +6,9 @@ USER root
 RUN apk --update add ca-certificates curl sudo docker openrc \
     && rm -rf /var/cache/apk/*
 
-# Remove the existing 'jenkins' user if it exists
-RUN if getent passwd jenkins > /dev/null ; then deluser jenkins; fi
+# Remove the existing 'jenkins' user and group if they exist
+RUN if getent passwd jenkins > /dev/null ; then userdel jenkins; fi \
+    && if getent group jenkins > /dev/null ; then delgroup jenkins; fi
 
 # Setup Jenkins
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
