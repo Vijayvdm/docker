@@ -2,7 +2,7 @@ FROM jenkins/jenkins:2.154-alpine
 
 USER root
 
-# Install necessary packagestt
+# Install necessary packagestt2
 RUN apk --update add ca-certificates curl sudo docker openrc \
     && rm -rf /var/cache/apk/*
 
