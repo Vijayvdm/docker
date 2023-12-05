@@ -2,7 +2,7 @@ FROM jenkins/jenkins:2.154-alpine
 
 USER root
 
-# Install necessary packagest
+# Install necessary packagestt
 RUN apk --update add ca-certificates curl sudo docker openrc \
     && rm -rf /var/cache/apk/*
 
@@ -15,7 +15,7 @@ RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && addgroup -g 50 staff \
     && adduser -D -u 1000 -G staff -s /bin/sh -h /var/jenkins_home jenkins \
     && echo "jenkins:jenkins" | chpasswd
-
+    
 USER jenkins
 
 # Environment variable to disable SSL verification
