@@ -2,24 +2,25 @@ FROM jenkins/jenkins:2.154-alpine
 
 USER root
 
-RUN apk -U add docker
+# Install necessary packages
+RUN apk --update add ca-certificates curl sudo docker openrc \
+    && rm -rf /var/cache/apk/*
 
-# Add the "jenkins" user to the "staff" group
-RUN addgroup -g 50 staff \
-    && adduser -D -u 1002 -G staff jenkins2
-
-# Allow "jenkins" to run sudo without a password
-RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
+# Setup Jenkins
+RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
+    && addgroup -g 50 staff \
+    && adduser jenkins2 -G staff
 
 USER jenkins
 
-# Your existing Dockerfile instructions...
-
-# Change EXPORT to ENV
+# Environment variable to disable SSL verification
 ENV CURL_OPTS="--insecure"
+
+# Run Jenkins plugin installation script
 RUN /usr/local/bin/install-plugins.sh blueocean build-environment cloudbees-folder config-file-provider credentials-binding credentials docker-plugin docker-slaves envinject git greenballs groovy http_request job-dsl jobConfigHistory naginator pam-auth pipeline-utility-steps nexus-artifact-uploader slack workflow-aggregator sonar subversion
 
 COPY resources/basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
 COPY resources/maven-global-settings-files.xml /usr/share/jenkins/ref/maven-global-settings-files.xml
+
+# Disable Jenkins setup wizard
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
-USER root
