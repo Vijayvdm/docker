@@ -9,9 +9,9 @@ RUN apk --update add ca-certificates curl sudo docker openrc \
 # Setup Jenkins
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && addgroup -g 50 staff \
-    && adduser jenkins2
+    && adduser jenkins
 
-USER jenkins2
+USER jenkins
 
 # Environment variable to disable SSL verification
 ENV CURL_OPTS="--insecure"
