@@ -2,39 +2,33 @@ FROM jenkins/jenkins:2.154-alpine
 
 USER root
 
-RUN apk -U add docker
+# Install necessary packages
+RUN apk --update add ca-certificates curl sudo docker openrc \
+    && rm -rf /var/cache/apk/*
+
+# Remove the existing 'jenkins' user if it exists
+RUN if id jenkins; then deluser jenkins; fi
+
 # Setup Jenkins
-RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
-RUN apk add --update shadow \
-    && groupadd -g 50 staff \
-    && usermod -a -G staff jenkins
+RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
+    && addgroup -g 50 staff \
+    && adduser jenkins
+
 USER jenkins
-RUN /usr/local/bin/install-plugins.sh \
-blueocean \
-build-environment \
-cloudbees-folder \
-config-file-provider \
-credentials-binding \
-credentials \
-docker-plugin \
-docker-slaves \
-envinject \
-git \
-greenballs \
-groovy \
-http_request \
-job-dsl \
-jobConfigHistory \
-naginator \
-pam-auth \
-pipeline-utility-steps \
-nexus-artifact-uploader \
-slack \
-workflow-aggregator \
-sonar \
-subversion
+
+# Environment variable to disable SSL verification
+ENV CURL_OPTS="--insecure"
+
+# Run Jenkins plugin installation script with --insecure option
+RUN /usr/local/bin/install-plugins.sh --insecure \
+    blueocean build-environment cloudbees-folder config-file-provider \
+    credentials-binding credentials docker-plugin docker-slaves envinject \
+    git greenballs groovy http_request job-dsl jobConfigHistory naginator \
+    pam-auth pipeline-utility-steps nexus-artifact-uploader slack \
+    workflow-aggregator sonar subversion
 
 COPY resources/basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-security.groovy
 COPY resources/maven-global-settings-files.xml /usr/share/jenkins/ref/maven-global-settings-files.xml
+
+# Disable Jenkins setup wizard
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
-USER root
