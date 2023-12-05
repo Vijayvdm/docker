@@ -11,6 +11,12 @@ RUN addgroup -g 50 staff \
 # Allow "jenkins" to run sudo without a password
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
+# Install the ca-certificates package
+RUN apk --no-cache add ca-certificates
+
+# Update the CA certificates bundle
+RUN update-ca-certificates
+
 USER jenkins
 
 # Your existing Dockerfile instructions...
