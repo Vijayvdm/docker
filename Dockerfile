@@ -8,8 +8,10 @@ RUN apk --update add ca-certificates curl sudo docker openrc \
 
 # Setup Jenkins
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
-    && addgroup -g 50 staff \
-    && adduser jenkins
+    && addgroup -g 50 staff
+
+# Check if 'jenkins' user exists before adding
+RUN if ! id -u jenkins > /dev/null 2>&1; then adduser -G staff -D -u 1000 jenkins; fi
 
 USER jenkins
 
