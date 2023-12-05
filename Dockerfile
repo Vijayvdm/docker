@@ -2,16 +2,14 @@ FROM jenkins/jenkins:2.154-alpine
 
 USER root
 
-# Update CA certificates
-RUN apk --update add ca-certificates
-
-# Install Docker
 RUN apk -U add docker
 
-# Setup Jenkins
-RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
-    && addgroup -g 50 staff \
-    && adduser jenkins -G staff
+# Add the "jenkins" user to the "staff" group
+RUN addgroup -g 50 staff \
+    && adduser -D -u 1000 -G staff jenkins
+
+# Allow "jenkins" to run sudo without a password
+RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER jenkins
 
@@ -25,4 +23,3 @@ COPY resources/basic-security.groovy /usr/share/jenkins/ref/init.groovy.d/basic-
 COPY resources/maven-global-settings-files.xml /usr/share/jenkins/ref/maven-global-settings-files.xml
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 USER root
-
