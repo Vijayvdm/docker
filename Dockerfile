@@ -10,7 +10,7 @@ RUN apk --update add ca-certificates curl sudo docker openrc \
 RUN if getent passwd jenkins > /dev/null ; then deluser jenkins; fi \
     && if getent group jenkins > /dev/null ; then delgroup jenkins; fi
 
-# Setup Jenkins with a password
+# Setup Jenkins with a passwordt
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && addgroup -g 50 staff \
     && adduser -D -u 1000 -G staff -s /bin/sh -h /var/jenkins_home jenkins \
