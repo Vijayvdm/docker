@@ -19,7 +19,7 @@ RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers \
 USER jenkins
 
 # Environment variable to disable SSL verification
-ENV CURL_OPTS="--insecure"
+ENV CURL_OPTS="--proxy-insecure"
 
 # Run Jenkins plugin installation script with updated CA certificates
 USER root
