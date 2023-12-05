@@ -6,7 +6,7 @@ RUN apk -U add docker
 
 # Add the "jenkins" user to the "staff" group
 RUN addgroup -g 50 staff \
-    && adduser -D -u 1000 -G staff jenkins
+    && adduser -D -u 1000 -G staff jenkins1
 
 # Allow "jenkins" to run sudo without a password
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
