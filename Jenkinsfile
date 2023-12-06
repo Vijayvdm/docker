@@ -48,8 +48,8 @@ pipeline {
             steps {
                 // Copy Docker image to remote host and run container
                 script {
-                    sh "docker save aswarda/samplewebapp:latest | ssh jenkins@34.93.38.164 'docker load'"
-                    sh "ssh jenkins@34.93.38.164 'docker run -d -p 8003:8080 aswarda/samplewebapp:latest'"
+                    sh "docker save aswarda/samplewebapp:latest | docker load"
+                    sh "docker run -d -p 8003:8080 aswarda/samplewebapp:latest"
                 }
             }
         }
