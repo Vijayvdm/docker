@@ -31,7 +31,7 @@ pipeline {
 
         stage('Publish image to Docker Hub') {
             steps {
-                // Push Docker image to Docker Hub 2nd one
+                // Push Docker image to Docker Hub 2nd container
                 script {
                     withDockerRegistry([credentialsId: "dockerHub", url: ""]) {
                         sh 'docker push aswarda/samplewebapp:latest'
