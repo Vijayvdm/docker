@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+    SLACK_CHANNEL = 'jenkins-testing'
+    }
 
     tools {
         maven "Maven"
