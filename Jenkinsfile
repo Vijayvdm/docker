@@ -43,7 +43,7 @@ pipeline {
         stage('Run Docker container on Jenkins Agent') {
             steps {
                 // Run Docker container on Jenkins Agent
-                sh 'docker run -d -p 8015:8080 aswarda/samplewebapp:latest'
+                sh 'docker run -d -p 8018:8080 aswarda/samplewebapp:latest'
             }
         }
 
@@ -52,7 +52,7 @@ pipeline {
                 // Copy Docker image to remote host and run container
                 script {
                     sh "docker save aswarda/samplewebapp:latest | docker load"
-                    sh "docker run -d -p 8014:8080 aswarda/samplewebapp:latest"
+                    sh "docker run -d -p 8019:8080 aswarda/samplewebapp:latest"
                 }
             }
         }
