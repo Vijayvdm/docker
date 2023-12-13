@@ -23,7 +23,7 @@ pipeline {
 
         stage('Docker Build and Tag') {
             steps {
-                // Build and tag Docker image this is commented 
+                // Build and tag Docker image this is commented 1
                 sh 'docker build -t samplewebapp:latest .'
                 sh 'docker tag samplewebapp:latest aswarda/samplewebapp:latest'
             }
