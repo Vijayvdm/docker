@@ -19,6 +19,15 @@
           <version>8.0.31</version> <!-- Updated version -->
       </dependency>
   </dependencies>
+  <dependencyManagement>
+      <dependencies>
+          <dependency>
+              <groupId>com.google.protobuf</groupId>
+              <artifactId>protobuf-java</artifactId>
+              <version>4.28.2</version> <!-- Choose a safe version -->
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
   <build>
       <plugins>
           <plugin>
