@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sampleapp
+  namespace: default # Use the appropriate namespace
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # Use the appropriate ingress class (e.g., for ALB or other controllers)
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: sampleapp.example.com # Replace with your domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sampleapp-service
+                port:
+                  number: 8081
+  tls:
+    - hosts:
+        - sampleapp.example.com # Replace with your domain
+      secretName: sampleapp-tls-secret # Pre-create a TLS secret for HTTPS
