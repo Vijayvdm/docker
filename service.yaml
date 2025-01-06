@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sampleapp
+  namespace: default # Use the appropriate namespace
+  labels:
+    app: sampleapp
+spec:
+  selector:
+    app: sampleapp
+  ports:
+    - protocol: TCP
+      port: 8081           # Service port
+      targetPort: 8081     # Pod/container port
+  type: NodePort        # Use 'NodePort' or 'LoadBalancer' for external access if required
