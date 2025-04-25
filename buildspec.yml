@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com
+      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - IMAGE_URI=751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:$IMAGE_TAG
+
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t $IMAGE_URI .
+      - docker push $IMAGE_URI
+
+  post_build:
+    commands:
+      - echo Updating ECS task definition...
+      - |
+        TASK_DEF_JSON=$(aws ecs describe-task-definition --task-definition test_task_definition)
+        NEW_TASK_DEF=$(echo $TASK_DEF_JSON | jq --arg IMAGE "$IMAGE_URI" '.taskDefinition |
+          del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .tags) |
+          .containerDefinitions[0].image = $IMAGE')
+        echo "$NEW_TASK_DEF" > task-def.json
+        TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://task-def.json --query 'taskDefinition.taskDefinitionArn' --output text)
+        aws ecs update-service --cluster ecs_cluster --service test_task_definition-service-a827u7k1 --task-definition $TASK_DEF_ARN --force-new-deployment
+
+artifacts:
+  files: '**/*'
