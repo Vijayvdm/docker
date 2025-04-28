@@ -5,12 +5,13 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com
-      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
-      - IMAGE_URI=751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:$IMAGE_TAG
+      - export IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - export IMAGE_URI=751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:$IMAGE_TAG
 
   build:
     commands:
       - echo Building Docker image...
+      - echo "Image URI: $IMAGE_URI"
       - docker build -t $IMAGE_URI .
       - docker push $IMAGE_URI
 
