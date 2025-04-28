@@ -17,15 +17,9 @@ phases:
 
   post_build:
     commands:
-      - echo Updating ECS task definition...
-      - |
-        TASK_DEF_JSON=$(aws ecs describe-task-definition --task-definition test_task_definition)
-        NEW_TASK_DEF=$(echo $TASK_DEF_JSON | jq --arg IMAGE "$IMAGE_URI" '.taskDefinition |
-          del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .tags) |
-          .containerDefinitions[0].image = $IMAGE')
-        echo "$NEW_TASK_DEF" > task-def.json
-        TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://task-def.json --query 'taskDefinition.taskDefinitionArn' --output text)
-        aws ecs update-service --cluster ecs_cluster --service test_task_definition-service-a827u7k1 --task-definition $TASK_DEF_ARN --force-new-deployment
+      - echo Creating imagedefinitions.json file...
+      - printf '[{"name":"testecr","imageUri":"%s"}]' "$IMAGE_URI" > imagedefinitions.json
 
 artifacts:
-  files: '**/*'
+  files:
+    - imagedefinitions.json
