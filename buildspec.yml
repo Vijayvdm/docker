@@ -7,20 +7,37 @@ phases:
       - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com
       - export IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
       - export IMAGE_URI=751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:$IMAGE_TAG
+      - export CLUSTER_NAME=test_cluster
+      - export SERVICE_NAME=testservice
+      - export TASK_FAMILY=testtaskdefinition
+      - export CONTAINER_NAME=testecr
 
   build:
     commands:
       - echo Building Docker image...
-      - echo "Image URI: $IMAGE_URI"
       - docker build -t $IMAGE_URI .
       - docker push $IMAGE_URI
 
   post_build:
     commands:
-      - echo Creating imagedefinitions.json file...
-      - printf '[{"name":"testecr","imageUri":"%s"}]' "$IMAGE_URI" > imagedefinitions.json
-
-artifacts:
-  files:
-    - imagedefinitions.json
-     discard-paths: yes
+      - echo Registering new ECS Task Definition...
+      - |
+        NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+          --family $TASK_FAMILY \
+          --network-mode awsvpc \
+          --requires-compatibilities FARGATE \
+          --cpu "256" \
+          --memory "512" \
+          --execution-role-arn arn:aws:iam::751651548664:role/codepipline \
+          --container-definitions "[{
+            \"name\":\"$CONTAINER_NAME\",
+            \"image\":\"$IMAGE_URI\",
+            \"essential\":true,
+            \"portMappings\":[{\"containerPort\":8081,\"protocol\":\"http\"}]
+          }]" \
+          --query 'taskDefinition.taskDefinitionArn' --output text)
+      - echo Updating ECS Service to use new task definition...
+      - aws ecs update-service \
+          --cluster $CLUSTER_NAME \
+          --service $SERVICE_NAME \
+          --task-definition $NEW_TASK_DEF_ARN
