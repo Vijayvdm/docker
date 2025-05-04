@@ -26,8 +26,8 @@ phases:
       - |
         aws codeguru-reviewer create-code-review \
           --name "code-review-$(date +%s)" \
-          --type RepositoryAnalysis="{\"RepositoryHead\":{\"BranchName\":\"master\"}}" \
-          --repository "AssociationArn=arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association/a5bbf4f2-5d4c-4693-b226-412579af6632"
+          --type RepositoryAnalysis='{\"RepositoryHead\":{\"BranchName\":\"master\"}}' \
+          --repository 'AssociationArn=arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association/a5bbf4f2-5d4c-4693-b226-412579af6632'
 
 artifacts:
   files:
