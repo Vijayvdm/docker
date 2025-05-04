@@ -20,14 +20,14 @@ phases:
       - docker push 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:latest
       - echo Writing image definitions file...
       - printf '[{"name":"testecr","imageUri":"%s"}]' 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:latest > imagedefinitions.json
-      
+
       # Triggering CodeGuru Reviewer
       - echo Triggering CodeGuru Reviewer scan...
       - |
-      aws codeguru-reviewer create-code-review \
-     --name "code-review-$(date +%s)" \
-     --type RepositoryAnalysis="{\"RepositoryHead\":{\"BranchName\":\"master\"}}" \
-     --repository "AssociationArn=arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association/a5bbf4f2-5d4c-4693-b226-412579af6632"
+        aws codeguru-reviewer create-code-review \
+          --name "code-review-$(date +%s)" \
+          --type RepositoryAnalysis="{\"RepositoryHead\":{\"BranchName\":\"master\"}}" \
+          --repository "AssociationArn=arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association/a5bbf4f2-5d4c-4693-b226-412579af6632"
 
 artifacts:
   files:
