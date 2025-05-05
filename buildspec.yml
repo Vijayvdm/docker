@@ -29,8 +29,8 @@ phases:
       - |
         export REVIEW_NAME=code-review-$(date +%s)
         aws codeguru-reviewer create-code-review \
-          --name $REVIEW_NAME \
-          --type RepositoryAnalysis="{\"RepositoryHead\": {\"BranchName\": \"master\"}}" \
+          --name "$REVIEW_NAME" \
+          --type RepositoryAnalysis=repositoryHead={branchName=master} \
           --repository-association-arn arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association:a5bbf4f2-5d4c-4693-b226-412579af6632
 
 artifacts:
