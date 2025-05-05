@@ -4,8 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin
-        751651548664.dkr.ecr.ap-southeast-1.amazonaws.com
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com
 
   build:
     commands:
@@ -29,9 +28,17 @@ phases:
       - |
         export REVIEW_NAME=code-review-$(date +%s)
         aws codeguru-reviewer create-code-review \
-          --name "$REVIEW_NAME" \
-          --type RepositoryAnalysis=repositoryHead={branchName=master} \
-          --repository-association-arn arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association:a5bbf4f2-5d4c-4693-b226-412579af6632
+          --cli-input-json "{
+            \"Name\": \"${REVIEW_NAME}\",
+            \"Type\": {
+              \"RepositoryAnalysis\": {
+                \"RepositoryHead\": {
+                  \"BranchName\": \"master\"
+                }
+              }
+            },
+            \"RepositoryAssociationArn\": \"arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association:a5bbf4f2-5d4c-4693-b226-412579af6632\"
+          }"
 
 artifacts:
   files:
