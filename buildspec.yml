@@ -35,7 +35,7 @@ phases:
                 }
               }
             },
-            \"RepositoryAssociationArn\": \"arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association:5da3d59c-2936-40ba-aa0a-a8aeb8b95ae8\"
+            \"RepositoryAssociationArn\": \"arn:aws:codeguru-reviewer:ap-southeast-1:751651548664:association:09c635e3-007b-4b28-905f-277b73d8a691\"
           }"
 
 artifacts:
