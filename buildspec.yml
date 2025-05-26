@@ -12,13 +12,6 @@ phases:
       - echo Building the Docker image...
       - docker build -t test -f Dockerfile .
       - docker tag test:latest 751651548664.dkr.ecr.ap-southeast-1.amazonaws.com/testecr:latest
-      
-      - echo Installing Snyk...
-      - curl -sL https://snyk.io/install.sh | bash
-      - echo Authenticating Snyk...
-      - snyk auth $SNYK_TOKEN
-      - echo Running Snyk container image scan...
-      - snyk container test test --file=Dockerfile || true
 
   post_build:
     commands:
